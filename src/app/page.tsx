@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getTasks } from "@/services/taskService";
 import Image from "next/image";
 import Logo from "../../public/logo.svg";
 import ProfileImage from "../../public/images/profile-image.avif";
@@ -10,6 +11,7 @@ import Search from "@/common/Search";
 
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
+  const [tasks, setTasks] = useState<any>()
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -18,6 +20,20 @@ export default function Home() {
   const handleCloseModal = () => {
     setOpenModal(!opnModal);
   };
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const fetchedTodos = await getTasks();
+      setTasks(fetchedTodos);
+    };
+    fetchTodos();
+  }, []);
+
+  console.log(tasks, '--tasks');
+
+  console.log(process.env.NEXT_URL, '--env');
+  
+  
   return (
     <main className="m-10 md:m-20">
       <div className="flex justify-between">
@@ -27,7 +43,7 @@ export default function Home() {
       <div className="flex justify-between mt-5">
         <div>
           <h1 className="text-2xl font-semibold text-dark">
-            Welcome, <span className="text-primary">John</span>
+            Welcome, <span className="text-primary">John.</span>
           </h1>
           <span className="text-slate-400 text-sm">
             You've got 7 tasks to do.
