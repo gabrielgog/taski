@@ -19,7 +19,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                 onClick={onClose}
                 className="text-gray-600 absolute top-0 right-0 p-2"
               >
-                <Image src={CloseIcon.src} alt="close-icon" width={20} height={20}/>
+                <Image
+                  src={CloseIcon.src}
+                  alt="close-icon"
+                  width={20}
+                  height={20}
+                />
               </button>
               <div className="p-4 ">{children}</div>
             </div>

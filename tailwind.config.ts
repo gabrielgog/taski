@@ -16,11 +16,11 @@ const config: Config = {
       },
       colors: {
         primary: "#318CE7",
-        dark: "#3D3D3D"   
-    },
-    fontFamily: {
-        sans: ['Urbanist']
-    },
+        dark: "#3D3D3D",
+      },
+      fontFamily: {
+        sans: ["Urbanist"],
+      },
     },
   },
   plugins: [],

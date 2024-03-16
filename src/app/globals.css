@@ -9,21 +9,19 @@
 }
 
 @font-face {
-    font-family: 'Urbanist';
-    src: url('../fonts/Urbanist-Bold.otf');
-    font-weight: bold;
-  }
+  font-family: "Urbanist";
+  src: url("../fonts/Urbanist-Bold.otf");
+  font-weight: bold;
+}
 
-   @font-face {
-    font-family: 'Urbanist';
-    src: url('../fonts/Urbanist-Regular.otf');
-    font-weight: normal;
-  }
-  
-  
-  @font-face {
-    font-family: 'Urbanist';
-    src: url('../fonts/Urbanist-Medium.otf');
-    font-weight: 500;
-  }
+@font-face {
+  font-family: "Urbanist";
+  src: url("../fonts/Urbanist-Regular.otf");
+  font-weight: normal;
+}
 
+@font-face {
+  font-family: "Urbanist";
+  src: url("../fonts/Urbanist-Medium.otf");
+  font-weight: 500;
+}
