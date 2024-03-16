@@ -4,7 +4,7 @@ import routes from "@/const/routes";
 export const getTasks = async () => {
     try {
       const response = networkInstance.get(routes.TODOS);
-      console.log(response, '--holla');
+      console.log(response, '--');
       
     //   if (!response.ok) {
     //     throw new Error('Failed to fetch todos');

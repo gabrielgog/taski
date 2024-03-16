@@ -7,7 +7,7 @@ import Logo from "../../public/logo.svg";
 import ProfileImage from "../../public/images/profile-image.avif";
 import PlusIcon from "../../public/icons/plus-icon.svg";
 import Avatar from "@/common/Avatar";
-import Search from "@/common/Search";
+import Input from "@/common/Input";
 
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
@@ -49,7 +49,7 @@ export default function Home() {
             You've got 7 tasks to do.
           </span>
         </div>
-        <Search search="" onChange={() => null} />
+        <Input type="search" value="" onChange={() => null} placeholder="Search..." />
       </div>
       <div className="flex items-center gap-2 mt-10">
         <button onClick={handleOpenModal}>
