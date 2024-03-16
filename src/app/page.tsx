@@ -7,6 +7,7 @@ import ProfileImage from "../../public/images/profile-image.avif";
 import PlusIcon from "../../public/icons/plus-icon.svg";
 import Avatar from "@/common/Avatar";
 import Modal from "@/common/Modal";
+import Search from "@/common/Search";
 
 export default function Home() {
     const [opnModal, setOpenModal] = useState(false);
@@ -27,12 +28,13 @@ export default function Home() {
             <Image src={Logo} alt="taski-logo"/>
             <Avatar name="John" image={ProfileImage.src}/>
         </div>
-
-        <div className="mt-5">
-            <h1 className="text-2xl font-semibold text-dark">Welcome, <span className="text-primary">John</span></h1>
+        <div className="flex justify-between mt-5">
+           <div>
+           <h1 className="text-2xl font-semibold text-dark">Welcome, <span className="text-primary">John</span></h1>
             <span className="text-slate-400 text-sm">You've got 7 tasks to do.</span>
+           </div>
+           <Search search="" onChange={() => null}/>
         </div>
-
         <div className="flex items-center gap-2 mt-10">
         <button onClick={handleOpenModal}>
             <Image src={PlusIcon} alt="plus-icon" />
