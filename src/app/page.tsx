@@ -8,11 +8,12 @@ import ProfileImage from "../../public/images/profile-image.avif";
 import PlusIcon from "../../public/icons/plus-icon.svg";
 import Avatar from "@/common/Avatar";
 import Input from "@/common/Input";
-import TaskList from "@/components/TaskList";
+import TaskList, { TaskListItem } from "@/components/TaskList";
 
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
-  const [tasks, setTasks] = useState<any>();
+  const [tasks, setTasks] = useState<TaskListItem[]>([]);
+  const [search, setSearch] = useState<string>("");
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -20,6 +21,10 @@ export default function Home() {
 
   const handleCloseModal = () => {
     setOpenModal(!opnModal);
+  };
+
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value);
   };
 
   useEffect(() => {
@@ -30,9 +35,16 @@ export default function Home() {
     fetchTodos();
   }, []);
 
-  console.log(tasks, "--tasks");
+//   console.log(tasks, "--tasks");
 
-//   console.log(process.env.NEXT_URL, "--env");
+  //   console.log(process.env.NEXT_URL, "--env");
+
+  console.log(search, '--search');
+
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(search.toLowerCase())
+  );
+  
 
   return (
     <main className="m-10 md:m-20">
@@ -51,8 +63,8 @@ export default function Home() {
         </div>
         <Input
           type="search"
-          value=""
-          onChange={() => null}
+          value={search}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e)}
           placeholder="Search..."
         />
       </div>
@@ -64,10 +76,8 @@ export default function Home() {
       </div>
 
       <div className="mt-5">
-      <TaskList tasks={tasks} />
-
+        <TaskList tasks={filteredTasks} />
       </div>
-
     </main>
   );
 }

@@ -4,7 +4,7 @@ import SearchIcon from "../../public/icons/search-icon.svg";
 
 interface SearchProps {
   value: string;
-  onChange?: () => void;
+  onChange?: (data: any) => void;
   type?: string;
   placeholder?: string;
 }

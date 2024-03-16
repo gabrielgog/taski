@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-interface TaskListItem {
+export interface TaskListItem {
   id: number;
   title: string;
   description: string;
@@ -21,6 +21,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
         : [...prevCompletedTasks, taskId]
     );
   };
+
+  if (tasks.length === 0) {
+    return <div className="text-gray-500">No tasks available.</div>;
+  }
 
   return (
     <div className="flex flex-col gap-5 min-w-36">   
