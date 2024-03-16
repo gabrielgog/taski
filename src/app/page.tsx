@@ -8,10 +8,11 @@ import ProfileImage from "../../public/images/profile-image.avif";
 import PlusIcon from "../../public/icons/plus-icon.svg";
 import Avatar from "@/common/Avatar";
 import Input from "@/common/Input";
+import TaskList from "@/components/TaskList";
 
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
-  const [tasks, setTasks] = useState<any>()
+  const [tasks, setTasks] = useState<any>();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -29,11 +30,10 @@ export default function Home() {
     fetchTodos();
   }, []);
 
-  console.log(tasks, '--tasks');
+  console.log(tasks, "--tasks");
 
-  console.log(process.env.NEXT_URL, '--env');
-  
-  
+//   console.log(process.env.NEXT_URL, "--env");
+
   return (
     <main className="m-10 md:m-20">
       <div className="flex justify-between">
@@ -49,7 +49,12 @@ export default function Home() {
             You've got 7 tasks to do.
           </span>
         </div>
-        <Input type="search" value="" onChange={() => null} placeholder="Search..." />
+        <Input
+          type="search"
+          value=""
+          onChange={() => null}
+          placeholder="Search..."
+        />
       </div>
       <div className="flex items-center gap-2 mt-10">
         <button onClick={handleOpenModal}>
@@ -57,6 +62,12 @@ export default function Home() {
         </button>
         <span className="text-gray-600">Add a new task...</span>
       </div>
+
+      <div className="mt-5">
+      <TaskList tasks={tasks} />
+
+      </div>
+
     </main>
   );
 }
