@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useEffect, useState } from "react";
-import { getTasks, addTasks } from "@/services/taskService";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  import { getTasks, addTasks } from "@/services/taskService";
 import Image from "next/image";
 import Logo from "../../public/logo.svg";
 import ProfileImage from "../../public/images/profile-image.avif";
@@ -13,6 +15,7 @@ import Modal from "@/common/Modal";
 
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState<TaskListItem[]>([]);
   const [search, setSearch] = useState<string>("");
 
@@ -43,8 +46,11 @@ export default function Home() {
         "description": "some description"
     }
 
+    setLoading(true)
     await addTasks(data).then(() => {
-        alert('success')
+        toast.success("Successfully added a task")
+        setLoading(false)
+        handleCloseModal()
     
     }).catch((error: string) => {
         console.log(error, 'err');
@@ -69,6 +75,7 @@ export default function Home() {
 
   return (
     <main className="m-10 md:m-20">
+        <ToastContainer />
       <div className="flex justify-between">
         <Image src={Logo} alt="taski-logo" />
         <Avatar name="John" image={ProfileImage.src} />
@@ -108,15 +115,16 @@ export default function Home() {
             placeholder="Description"
           />
 
-          <select className="border-2 border-gray-300 bg-white h-10 px-5  pr-16 rounded-lg text-sm select select-bordered w-full max-w-xs">
+          {/* <select className="border-2 border-gray-300 bg-white h-10 px-5  pr-16 rounded-lg text-sm select select-bordered w-full max-w-xs">
             <option disabled selected>
               Who shot first?
             </option>
             <option>Han Solo</option>
             <option>Greedo</option>
-          </select>
+          </select> */}
           <button className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white" onClick={handleAddTasks}>
-            Add task
+            {loading ? "loading..." : "Add task"}
+            
             <div className="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-10"></div>
           </button>
         </div>
