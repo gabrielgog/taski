@@ -15,9 +15,10 @@ export interface TaskListItem {
 
 interface TaskListProps {
   tasks: TaskListItem[];
+  openModal: () => void
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, openModal }) => {
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
   const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
 
@@ -38,7 +39,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
       <div className="text-gray-500 flex flex-col gap-5 mt-8 text-center items-center">
         <Image src={EmptyImage} alt="empty-image" />
         <span>You have no tasks listed.</span>
-        <button className="flex flex-row items-center p-4 gap-4 bg-[#007FFF1A] rounded-lg text-primary font-semibold">
+        <button className="flex flex-row items-center p-4 gap-4 bg-[#007FFF1A] rounded-lg text-primary font-semibold" onClick={openModal}>
           <Image src={AddTaskIcon} alt="add-task-icon" />
           Create task
         </button>
@@ -48,21 +49,23 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
 
   return (
     <div className="flex flex-col gap-5 min-w-36">
+        
       {tasks.map((task) => (
         <div
           key={task.id}
-          className="p-6 bg-[#F5F7F9] rounded-lg flex flex-row items-center justify-between"
+          className={`p-6 bg-[#F5F7F9] rounded-lg flex flex-row items-center justify-between transition-all duration-500 max-h-[${expandedTaskId === task.id ? "100" : "40"}]`}
         >
           <div className="flex flex-wrap items-center gap-3">
             <input
               checked={completedTasks.includes(task.id)}
               onChange={() => toggleTaskCompletion(task.id)}
+              className="h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:border-primary checked:bg-primary"
               type="checkbox"
             />
             <p className={`${completedTasks.includes(task.id) ? "line-through text-gray-500" : ""}`}>
               {toSentenceCase(task.title)}
             </p>
-            {expandedTaskId === task.id && <div className="w-full">
+            {expandedTaskId === task.id && <div className="w-full transition-all duration-500">
                 <TaskDetail  description={task.description}/>
                 </div>}
           </div>
@@ -70,12 +73,15 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
             <Image
               src={CollapseIcon}
               alt="collapse-icon"
-              className={`cursor-pointer ${expandedTaskId === task.id ? "rotate-180" : ""}`}
+              className={`cursor-pointer ${expandedTaskId === task.id ? "rotate-180 transform duration-700 backdrop-opacity-100" : ""}`}
               onClick={() => toggleTaskDetail(task.id)}
             />
           </div>
         </div>
+        
       ))}
+      
+      
     </div>
   );
 };
