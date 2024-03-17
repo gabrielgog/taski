@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,11 +13,13 @@ import Avatar from "@/common/Avatar";
 import Input from "@/common/Input";
 import TaskList, { TaskListItem } from "@/components/TaskList";
 import Modal from "@/common/Modal";
+import SelectDropdown from "@/common/Select";
+import { checkCompletion } from "@/utils/checkBoolean";
 
 interface AddTaskType {
   title: string;
   description: string;
-  completed: boolean;
+  status: string;
 }
 
 export default function Home() {
@@ -39,6 +41,7 @@ export default function Home() {
 
   const handleCloseModal = () => {
     setOpenModal(!opnModal);
+    reset()
   };
 
   const handleSearch = (e: any) => {
@@ -53,24 +56,27 @@ export default function Home() {
     fetchTodos();
   }, []);
 
-  const handleAddTasks = async () => {
-    const data = {
-      title: "holla",
-      completed: false,
-      description: "some description",
+  const handleAddTasks = async (data: AddTaskType) => {
+    const payload = {
+      title: data.title,
+      completed: checkCompletion(data.status),
+      description: data.description,
     };
-
+  
     setLoading(true);
-    await addTasks(data)
-      .then(() => {
+    await addTasks(payload)
+      .then((newTask) => {
         toast.success("Successfully added a task");
         setLoading(false);
+        reset()
+        setTasks((prevTasks) => [newTask, ...prevTasks]);
         handleCloseModal();
       })
       .catch((error: string) => {
         console.log(error, "err");
       });
   };
+  
 
   //   console.log(tasks, "--tasks");
 
@@ -80,7 +86,7 @@ export default function Home() {
 
   const filteredTasks = tasks.filter(
     (task) =>
-      task.title.toLowerCase().includes(search.toLowerCase()) &&
+      task?.title.toLowerCase().includes(search.toLowerCase()) &&
       !task.completed,
   );
 
@@ -134,7 +140,9 @@ export default function Home() {
                   error={errors.title}
                 />
                 {errors.title?.type === "required" && (
-                  <span className="error text-sm text-red-600">Field is required</span>
+                  <span className="error text-sm text-red-600">
+                    Field is required
+                  </span>
                 )}
               </div>
             )}
@@ -152,9 +160,33 @@ export default function Home() {
                   className="border-2 border-gray-300 bg-white h-20 px-5 py-5 rounded-lg text-sm focus:outline-none"
                   placeholder="Description"
                 />
-                  {errors.description?.type === "required" && (
-                    <span className="text-sm text-red-600">Field is required</span>
-                  )}
+                {errors.description?.type === "required" && (
+                  <span className="text-sm text-red-600">
+                    Field is required
+                  </span>
+                )}
+              </div>
+            )}
+          />
+
+          <Controller
+            name="status"
+            rules={{ required: true }}
+            control={control}
+            render={({ field }) => (
+              <div>
+                <SelectDropdown
+                  value={field.value}
+                  onSelect={(selectedOption: string) =>
+                    field.onChange(selectedOption)
+                  }
+                  options={["Completed", "Not-completed"]}
+                />
+                {errors.status?.type === "required" && (
+                  <span className="text-sm text-red-600">
+                    Field is required
+                  </span>
+                )}
               </div>
             )}
           />
