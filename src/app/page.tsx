@@ -22,12 +22,8 @@ interface AddTaskType {
   status: string;
 }
 
-export default function Home() {
-  const [opnModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState<TaskListItem[]>([]);
-  const [search, setSearch] = useState<string>("");
 
+export default function Home() {
   const {
     handleSubmit,
     control,
@@ -35,23 +31,32 @@ export default function Home() {
     formState: { errors },
   } = useForm<AddTaskType>();
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const [data, setData] = useState({
+    openModal: false,
+    loading: false,
+    tasks: [],
+    search: "",
+  });
+
+  const handleDataUpdate = (field: any, value: any) => {
+    setData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleCloseModal = () => {
-    setOpenModal(!opnModal);
-    reset()
-  };
-
-  const handleSearch = (e: any) => {
-    setSearch(e.target.value);
+    setData((prev) => ({
+      ...prev,
+      openModal: false,
+    }));
+    reset();
   };
 
   useEffect(() => {
     const fetchTodos = async () => {
       const fetchedTodos = await getTasks();
-      setTasks(fetchedTodos);
+      handleDataUpdate("tasks", fetchedTodos);
     };
     fetchTodos();
   }, []);
@@ -62,31 +67,29 @@ export default function Home() {
       completed: checkCompletion(data.status),
       description: data.description,
     };
-  
-    setLoading(true);
-    await addTasks(payload)
-      .then((newTask) => {
-        toast.success("Successfully added a task");
-        setLoading(false);
-        reset()
-        setTasks((prevTasks) => [newTask, ...prevTasks]);
-        handleCloseModal();
-      })
-      .catch((error: string) => {
-        console.log(error, "err");
-      });
+
+    handleDataUpdate("loading", true);
+    try {
+      const newTask = await addTasks(payload);
+      const newId = Math.floor(Math.random() * 1000);
+      const updatedTask = { ...newTask, id: newId };
+      setData((prevState) => ({
+        ...prevState,
+        tasks: [updatedTask, ...prevState.tasks],
+        openModal: false,
+      }));
+
+      toast.success("Successfully added a task");
+      handleDataUpdate("loading", false);
+      reset();
+    } catch (error) {
+      toast.error("An error occurred");
+    }
   };
-  
 
-  //   console.log(tasks, "--tasks");
-
-  //   console.log(process.env.NEXT_URL, "--env");
-
-  console.log(search, "--search");
-
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task?.title.toLowerCase().includes(search.toLowerCase()) &&
+  const filteredTasks = data.tasks.filter(
+    (task: TaskListItem) =>
+      task?.title.toLowerCase().includes(data?.search?.toLowerCase()) &&
       !task.completed,
   );
 
@@ -108,23 +111,26 @@ export default function Home() {
         </div>
         <Input
           type="search"
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e)}
+          value={data.search}
+          onChange={(e) => handleDataUpdate("search", e.target.value)}
           placeholder="Search..."
         />
       </div>
       <div className="flex items-center gap-2 mt-10">
-        <button onClick={handleOpenModal}>
+        <button onClick={() => handleDataUpdate("openModal", true)}>
           <Image src={PlusIcon} alt="plus-icon" />
         </button>
         <span className="text-gray-600">Add a new task...</span>
       </div>
 
       <div className="mt-5">
-        <TaskList tasks={filteredTasks} openModal={handleOpenModal} />
+        <TaskList
+          tasks={filteredTasks}
+          openModal={() => handleDataUpdate("openModal", true)}
+        />
       </div>
 
-      <Modal isOpen={opnModal} onClose={handleCloseModal}>
+      <Modal isOpen={data.openModal} onClose={handleCloseModal}>
         <div className="flex flex-col justify-center mx-4 gap-5 w-80">
           <Controller
             name="title"
@@ -195,9 +201,7 @@ export default function Home() {
             className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white"
             onClick={handleSubmit(handleAddTasks)}
           >
-            {loading ? "loading..." : "Add task"}
-
-            <div className="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-10"></div>
+            {data.loading ? "loading..." : "Add task"}
           </button>
         </div>
       </Modal>
