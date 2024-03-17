@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,11 +9,11 @@ import Image from "next/image";
 import Logo from "../../public/logo.svg";
 import ProfileImage from "../../public/images/profile-image.avif";
 import PlusIcon from "../../public/icons/plus-icon.svg";
-import Avatar from "@/common/Avatar";
-import Input from "@/common/Input";
+import Avatar from "@/components/common/Avatar";
+import Input from "@/components/common/Input";
 import TaskList, { TaskListItem } from "@/components/TaskList";
-import Modal from "@/common/Modal";
-import SelectDropdown from "@/common/Select";
+import Modal from "@/components/common/Modal";
+import SelectDropdown from "@/components/common/Select";
 import { checkCompletion } from "@/utils/checkBoolean";
 
 interface AddTaskType {
