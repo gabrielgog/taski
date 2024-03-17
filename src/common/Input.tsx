@@ -7,9 +7,10 @@ interface SearchProps {
   onChange?: (data: any) => void;
   type?: string;
   placeholder?: string;
+  error? :any
 }
 
-const Search = ({ value, onChange, type, placeholder }: SearchProps) => {
+const Input = ({ value, onChange, type, placeholder }: SearchProps) => {
   return (
     <div className="pt-2 relative flex items-center text-gray-600">
       {type === "search" ? (
@@ -39,4 +40,4 @@ const Search = ({ value, onChange, type, placeholder }: SearchProps) => {
   );
 };
 
-export default Search;
+export default Input;

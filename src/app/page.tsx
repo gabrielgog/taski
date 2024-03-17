@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-  import { getTasks, addTasks } from "@/services/taskService";
+import { ToastContainer, toast } from "react-toastify";
+import { Controller, useForm } from "react-hook-form";
+import "react-toastify/dist/ReactToastify.css";
+import { getTasks, addTasks } from "@/services/taskService";
 import Image from "next/image";
 import Logo from "../../public/logo.svg";
 import ProfileImage from "../../public/images/profile-image.avif";
@@ -13,11 +14,24 @@ import Input from "@/common/Input";
 import TaskList, { TaskListItem } from "@/components/TaskList";
 import Modal from "@/common/Modal";
 
+interface AddTaskType {
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
 export default function Home() {
   const [opnModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState<TaskListItem[]>([]);
   const [search, setSearch] = useState<string>("");
+
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<AddTaskType>();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -41,25 +55,22 @@ export default function Home() {
 
   const handleAddTasks = async () => {
     const data = {
-        "title": "holla",
-        "completed": false,
-        "description": "some description"
-    }
+      title: "holla",
+      completed: false,
+      description: "some description",
+    };
 
-    setLoading(true)
-    await addTasks(data).then(() => {
-        toast.success("Successfully added a task")
-        setLoading(false)
-        handleCloseModal()
-    
-    }).catch((error: string) => {
-        console.log(error, 'err');
-        
-    
-    })
-    
-
-}
+    setLoading(true);
+    await addTasks(data)
+      .then(() => {
+        toast.success("Successfully added a task");
+        setLoading(false);
+        handleCloseModal();
+      })
+      .catch((error: string) => {
+        console.log(error, "err");
+      });
+  };
 
   //   console.log(tasks, "--tasks");
 
@@ -75,7 +86,7 @@ export default function Home() {
 
   return (
     <main className="m-10 md:m-20">
-        <ToastContainer />
+      <ToastContainer />
       <div className="flex justify-between">
         <Image src={Logo} alt="taski-logo" />
         <Avatar name="John" image={ProfileImage.src} />
@@ -104,27 +115,56 @@ export default function Home() {
       </div>
 
       <div className="mt-5">
-        <TaskList tasks={filteredTasks} openModal={handleOpenModal}/>
+        <TaskList tasks={filteredTasks} openModal={handleOpenModal} />
       </div>
 
       <Modal isOpen={opnModal} onClose={handleCloseModal}>
         <div className="flex flex-col justify-center mx-4 gap-5 w-80">
-          <Input value={""} placeholder="Task title"/>
-          <textarea
-            className="border-2 border-gray-300 bg-white h-20 px-5 py-5 rounded-lg text-sm focus:outline-none"
-            placeholder="Description"
+          <Controller
+            name="title"
+            rules={{ required: true }}
+            control={control}
+            render={({ field }) => (
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Title"
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors.title}
+                />
+                {errors.title?.type === "required" && (
+                  <span className="error text-sm text-red-600">Field is required</span>
+                )}
+              </div>
+            )}
           />
 
-          {/* <select className="border-2 border-gray-300 bg-white h-10 px-5  pr-16 rounded-lg text-sm select select-bordered w-full max-w-xs">
-            <option disabled selected>
-              Who shot first?
-            </option>
-            <option>Han Solo</option>
-            <option>Greedo</option>
-          </select> */}
-          <button className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white" onClick={handleAddTasks}>
+          <Controller
+            name="description"
+            rules={{ required: true }}
+            control={control}
+            render={({ field }) => (
+              <div className="w-full flex flex-col gap-1">
+                <textarea
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="border-2 border-gray-300 bg-white h-20 px-5 py-5 rounded-lg text-sm focus:outline-none"
+                  placeholder="Description"
+                />
+                  {errors.description?.type === "required" && (
+                    <span className="text-sm text-red-600">Field is required</span>
+                  )}
+              </div>
+            )}
+          />
+
+          <button
+            className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white"
+            onClick={handleSubmit(handleAddTasks)}
+          >
             {loading ? "loading..." : "Add task"}
-            
+
             <div className="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-10"></div>
           </button>
         </div>
