@@ -38,7 +38,7 @@ export default function Home() {
     search: "",
   });
 
-  const handleDataUpdate = (field: any, value: any) => {
+  const handleDataUpdate = (field, value) => {
     setData((prev) => ({
       ...prev,
       [field]: value,
