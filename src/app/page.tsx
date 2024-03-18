@@ -1,19 +1,19 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
 import { getTasks, addTasks } from "@/services/taskService";
 import Image from "next/image";
 import Logo from "../../public/logo.svg";
-import ProfileImage from "../../public/images/profile-image.avif";
+import ProfileImage from "../../public/images/profile-image.jpeg";
 import PlusIcon from "../../public/icons/plus-icon.svg";
-import Avatar from "@/common/Avatar";
-import Input from "@/common/Input";
+import Avatar from "@/components/common/Avatar";
+import Input from "@/components/common/Input";
 import TaskList, { TaskListItem } from "@/components/TaskList";
-import Modal from "@/common/Modal";
-import SelectDropdown from "@/common/Select";
+import Modal from "@/components/common/Modal";
+import SelectDropdown from "@/components/common/Select";
 import { checkCompletion } from "@/utils/checkBoolean";
 
 interface AddTaskType {
@@ -22,12 +22,21 @@ interface AddTaskType {
   status: string;
 }
 
-export default function Home() {
-  const [opnModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState<TaskListItem[]>([]);
-  const [search, setSearch] = useState<string>("");
+interface AppState {
+  openModal: boolean;
+  loading: boolean;
+  tasks: TaskListItem[];
+  search: string;
+}
 
+const initialAppState: AppState = {
+  openModal: false,
+  loading: false,
+  tasks: [],
+  search: "",
+};
+
+export default function Home() {
   const {
     handleSubmit,
     control,
@@ -35,97 +44,134 @@ export default function Home() {
     formState: { errors },
   } = useForm<AddTaskType>();
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const [data, setData] = useState<AppState>(initialAppState);
+
+  const handleDataUpdate = (field: string, value: boolean) => {
+    setData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleCloseModal = () => {
-    setOpenModal(!opnModal);
-    reset()
-  };
-
-  const handleSearch = (e: any) => {
-    setSearch(e.target.value);
+    setData((prev) => ({
+      ...prev,
+      openModal: false,
+    }));
+    reset();
   };
 
   useEffect(() => {
     const fetchTodos = async () => {
+      handleDataUpdate("loading", true);
       const fetchedTodos = await getTasks();
-      setTasks(fetchedTodos);
+      handleDataUpdate("loading", false);
+      handleDataUpdate("tasks", fetchedTodos);
     };
     fetchTodos();
   }, []);
 
   const handleAddTasks = async (data: AddTaskType) => {
+    const newId = Math.floor(Math.random() * 1000);
+
     const payload = {
       title: data.title,
       completed: checkCompletion(data.status),
       description: data.description,
+      id: newId,
     };
-  
-    setLoading(true);
-    await addTasks(payload)
-      .then((newTask) => {
-        toast.success("Successfully added a task");
-        setLoading(false);
-        reset()
-        setTasks((prevTasks) => [newTask, ...prevTasks]);
-        handleCloseModal();
-      })
-      .catch((error: string) => {
-        console.log(error, "err");
-      });
+
+    handleDataUpdate("loading", true);
+    try {
+      const newTask = await addTasks(payload);
+      const updatedTask = { ...newTask, id: newId };
+      setData((prevState) => ({
+        ...prevState,
+        tasks: [updatedTask, ...prevState.tasks],
+        openModal: false,
+      }));
+
+      toast.success("Successfully added a task");
+      handleDataUpdate("loading", false);
+      reset();
+    } catch (error) {
+      toast.error("An error occurred");
+      handleDataUpdate("loading", false);
+    }
   };
-  
 
-  //   console.log(tasks, "--tasks");
-
-  //   console.log(process.env.NEXT_URL, "--env");
-
-  console.log(search, "--search");
-
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task?.title.toLowerCase().includes(search.toLowerCase()) &&
+  const filteredTasks = data.tasks.filter(
+    (task: TaskListItem) =>
+      task?.title.toLowerCase().includes(data?.search?.toLowerCase()) &&
       !task.completed,
+  );
+
+  const InCompleteTasks = data.tasks.filter(
+    (task: TaskListItem) => !task.completed,
+  );
+
+  const CompletedTasks = data.tasks.filter(
+    (task: TaskListItem) => task.completed,
   );
 
   return (
     <main className="m-10 md:m-20">
       <ToastContainer />
       <div className="flex justify-between">
-        <Image src={Logo} alt="taski-logo" />
+        <Image
+          src={Logo}
+          alt="taski-logo"
+          className="max-w-[200px] max-h-[100px] w-auto h-auto"
+        />
         <Avatar name="John" image={ProfileImage.src} />
       </div>
-      <div className="flex justify-between mt-5">
+
+      <div className="flex flex-col md:flex-row md:justify-between  mt-10">
         <div>
           <h1 className="text-2xl font-semibold text-dark">
             Welcome, <span className="text-primary">John.</span>
           </h1>
           <span className="text-slate-400 text-sm">
-            You've got {filteredTasks.length} tasks to do.
+            You've got {InCompleteTasks.length} tasks to do.
           </span>
         </div>
         <Input
           type="search"
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e)}
+          value={data.search}
+          onChange={(e) => handleDataUpdate("search", e.target.value)}
           placeholder="Search..."
         />
       </div>
       <div className="flex items-center gap-2 mt-10">
-        <button onClick={handleOpenModal}>
+        <button onClick={() => handleDataUpdate("openModal", true)}>
           <Image src={PlusIcon} alt="plus-icon" />
         </button>
         <span className="text-gray-600">Add a new task...</span>
       </div>
 
-      <div className="mt-5">
-        <TaskList tasks={filteredTasks} openModal={handleOpenModal} />
+      <div className="mt-5 w-full h-[25rem] overflow-auto">
+        <TaskList
+          tasks={filteredTasks}
+          openModal={() => handleDataUpdate("openModal", true)}
+          loading={data.loading}
+        />
       </div>
 
-      <Modal isOpen={opnModal} onClose={handleCloseModal}>
-        <div className="flex flex-col justify-center mx-4 gap-5 w-80">
+        {!data.loading && (
+        <div className="flex justify-between p-4 mt-5">
+        <p className="text-gray-600">Completed</p>
+        <p className="underline cursor-pointer text-red-500">Delete all</p>
+    </div>
+            )}
+      <div className="mt-5 w-full h-[25rem] overflow-auto">
+        <TaskList
+          tasks={CompletedTasks}
+          checked
+        />
+      </div>
+
+      <Modal isOpen={data.openModal} onClose={handleCloseModal}>
+        <div className="flex flex-col justify-center mx-4 gap-5 w-70 md:w-80">
           <Controller
             name="title"
             rules={{ required: true }}
@@ -180,7 +226,7 @@ export default function Home() {
                   onSelect={(selectedOption: string) =>
                     field.onChange(selectedOption)
                   }
-                  options={["Completed", "Not-completed"]}
+                  options={["Not-completed"]}
                 />
                 {errors.status?.type === "required" && (
                   <span className="text-sm text-red-600">
@@ -192,12 +238,10 @@ export default function Home() {
           />
 
           <button
-            className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white"
+            className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white duration-200 hover:opacity-80"
             onClick={handleSubmit(handleAddTasks)}
           >
-            {loading ? "loading..." : "Add task"}
-
-            <div className="absolute inset-0 h-full w-full scale-0 rounded-2xl transition-all duration-300 group-hover:scale-10"></div>
+            {data.loading ? "loading..." : "Add task"}
           </button>
         </div>
       </Modal>

@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Taski
 
-## Getting Started
+Taski is a task management tool that allows individuals to create and manage tasks.
 
-First, run the development server:
+## Project Overview
 
-```bash
+Taski is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). It is deployed on [Netlify](https://www.netlify.com/).
+
+### Installation
+
+To run Taski locally, follow these steps:
+
+1. Clone the repository to your local device.
+2. Install all dependencies using your preferred package manager:
+   ```bash
+   npm install
+   # or
+   yarn
+## Running the Development Server
 npm run dev
 # or
 yarn dev
+
+Open http://localhost:3000 in your web browser to view the application.
+
+## Features
+
+With Taski, users can:
+
+1. Create tasks
+2. View task details
+3. View a list of completed tasks
+4. Search for tasks
+
+## Constraints and Future Improvements
+ There are areas for improvement for taski in the future
+1. Implement persistence for added tasks using local storage or state management tools like Redux.
+2. Enable editing and deleting tasks for better task management.
+
+## JSONPlaceholder API Integration
+
+Taski utilizes the [JSONPlaceholder](https://jsonplaceholder.typicode.com/) API to fetch all tasks and to create new tasks.
+
+### Fetching Tasks
+
+Taski fetches all tasks from the JSONPlaceholder API. The tasks are displayed in the application for users to view and manage.
+
+### Creating Tasks
+
+Users can create new tasks in Taski, and the data is sent to the JSONPlaceholder API to simulate the creation of tasks. While the JSONPlaceholder API does not actually persist data, it provides a convenient way to demonstrate task creation functionality in Taski.
+
+
+## Testing
+
+Taski components are thoroughly tested using Jest. To run the tests in isolation, execute the following command in the project directory:
+yarn test
 # or
-pnpm dev
-# or
-bun dev
-```
+npm test
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Live URL
+The live version of Taski can be accessed at https://taski-dev.netlify.app/.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Resources
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Next.js Documentation](https://nextjs.org/docs).
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+customization options.
+- [React Hook Form Documentation](https://react-hook-form.com/get-started)
+for form validation.
+- [React Hot Toast Documentation](https://react-hot-toast.com/)
+JSONPlaceholder API and its endpoints.
+- [JSONPlaceholder API Documentation](https://jsonplaceholder.typicode.com/).
