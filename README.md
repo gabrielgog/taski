@@ -53,6 +53,7 @@ Users can create new tasks in Taski, and the data is sent to the JSONPlaceholder
 ## Testing
 
 Taski components are thoroughly tested using Jest. To run the tests in isolation, execute the following command in the project directory:
+
 yarn test
 # or
 npm test
@@ -64,10 +65,10 @@ The live version of Taski can be accessed at https://taski-dev.netlify.app/.
 ## Resources
 
 - [Next.js Documentation](https://nextjs.org/docs).
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs).
 customization options.
-- [React Hook Form Documentation](https://react-hook-form.com/get-started)
+- [React Hook Form Documentation](https://react-hook-form.com/get-started).
 for form validation.
-- [React Hot Toast Documentation](https://react-hot-toast.com/)
+- [React Hot Toast Documentation](https://react-hot-toast.com/).
 JSONPlaceholder API and its endpoints.
 - [JSONPlaceholder API Documentation](https://jsonplaceholder.typicode.com/).
