@@ -19,7 +19,7 @@ const Avatar = ({ name, image }: Props) => {
           height={50}
         />
       ) : (
-        <div className="h-12 w-12 rounded-full bg-gray-200"></div>
+        <div data-testid="default-avatar" className="h-12 w-12 rounded-full bg-gray-200"></div>
       )}
     </div>
   );
