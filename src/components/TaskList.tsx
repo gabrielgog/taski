@@ -10,7 +10,7 @@ export interface TaskListItem {
   id: number;
   title: string;
   description: string;
-  completed: string;
+  completed: boolean;
 }
 
 interface TaskListProps {

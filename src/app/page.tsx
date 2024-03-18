@@ -62,16 +62,18 @@ export default function Home() {
   }, []);
 
   const handleAddTasks = async (data: AddTaskType) => {
+    const newId = Math.floor(Math.random() * 1000);
+
     const payload = {
       title: data.title,
       completed: checkCompletion(data.status),
       description: data.description,
+      id: newId
     };
 
     handleDataUpdate("loading", true);
     try {
       const newTask = await addTasks(payload);
-      const newId = Math.floor(Math.random() * 1000);
       const updatedTask = { ...newTask, id: newId };
       setData((prevState) => ({
         ...prevState,
