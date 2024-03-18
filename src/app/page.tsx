@@ -22,6 +22,20 @@ interface AddTaskType {
   status: string;
 }
 
+interface AppState {
+    openModal: boolean;
+    loading: boolean;
+    tasks: TaskListItem[]; 
+    search: string;
+  }
+  
+  const initialAppState: AppState = {
+    openModal: false,
+    loading: false,
+    tasks: [],
+    search: "",
+  };
+
 
 export default function Home() {
   const {
@@ -31,12 +45,7 @@ export default function Home() {
     formState: { errors },
   } = useForm<AddTaskType>();
 
-  const [data, setData] = useState({
-    openModal: false,
-    loading: false,
-    tasks: [],
-    search: "",
-  });
+  const [data, setData] = useState<AppState>(initialAppState);
 
   const handleDataUpdate = (field: string, value: boolean) => {
     setData((prev) => ({
