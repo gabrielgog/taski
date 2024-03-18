@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getTasks, addTasks } from "@/services/taskService";
 import Image from "next/image";
 import Logo from "../../public/logo.svg";
-import ProfileImage from "../../public/images/profile-image.avif";
+import ProfileImage from "../../public/images/profile-image.jpeg";
 import PlusIcon from "../../public/icons/plus-icon.svg";
 import Avatar from "@/components/common/Avatar";
 import Input from "@/components/common/Input";
