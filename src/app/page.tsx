@@ -64,7 +64,9 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTodos = async () => {
+        handleDataUpdate('loading', true)
       const fetchedTodos = await getTasks();
+      handleDataUpdate('loading', false)
       handleDataUpdate("tasks", fetchedTodos);
     };
     fetchTodos();
@@ -110,10 +112,14 @@ export default function Home() {
     <main className="m-10 md:m-20">
       <ToastContainer />
       <div className="flex justify-between">
-        <Image src={Logo} alt="taski-logo" />
+        <Image src={Logo} alt="taski-logo" 
+          className="max-w-[200px] max-h-[100px] w-auto h-auto"
+
+        />
         <Avatar name="John" image={ProfileImage.src} />
       </div>
-      <div className="flex justify-between mt-5">
+
+      <div className="flex flex-col md:flex-row md:justify-between  mt-10">
         <div>
           <h1 className="text-2xl font-semibold text-dark">
             Welcome, <span className="text-primary">John.</span>
@@ -140,11 +146,12 @@ export default function Home() {
         <TaskList
           tasks={filteredTasks}
           openModal={() => handleDataUpdate("openModal", true)}
+          loading={data.loading}
         />
       </div>
 
       <Modal isOpen={data.openModal} onClose={handleCloseModal}>
-        <div className="flex flex-col justify-center mx-4 gap-5 w-80">
+        <div className="flex flex-col justify-center mx-4 gap-5 w-70 md:w-80">
           <Controller
             name="title"
             rules={{ required: true }}
@@ -199,7 +206,7 @@ export default function Home() {
                   onSelect={(selectedOption: string) =>
                     field.onChange(selectedOption)
                   }
-                  options={["Completed", "Not-completed"]}
+                  options={["Not-completed"]}
                 />
                 {errors.status?.type === "required" && (
                   <span className="text-sm text-red-600">

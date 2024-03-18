@@ -3,8 +3,8 @@ import Image from "next/image";
 import EmptyImage from "../../public/images/empty-image.svg";
 import CollapseIcon from "../../public/icons/collapse-icon.svg";
 import AddTaskIcon from "../../public/icons/addTask-icon.svg";
-import { toSentenceCase } from "@/utils/toSetentenceCase";
 import TaskDetail from "./TaskDetail";
+import { truncateString } from "@/utils/truncate";
 
 export interface TaskListItem {
   id: number;
@@ -16,9 +16,10 @@ export interface TaskListItem {
 interface TaskListProps {
   tasks: TaskListItem[];
   openModal: () => void;
+  loading: boolean;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, openModal }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, openModal, loading }) => {
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
   const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
 
@@ -34,7 +35,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, openModal }) => {
     setExpandedTaskId((prevTaskId) => (prevTaskId === taskId ? null : taskId));
   };
 
-  if (tasks.length === 0) {
+  if (!loading && tasks.length === 0) {
     return (
       <div className="text-gray-500 flex flex-col gap-5 mt-8 text-center items-center">
         <Image src={EmptyImage} alt="empty-image" />
@@ -48,6 +49,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, openModal }) => {
         </button>
       </div>
     );
+  }
+
+  if (loading) {
+    return <div className="text-center text-gray-500">Loading...</div>;
   }
 
   return (
@@ -88,7 +93,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, openModal }) => {
             <p
               className={`pb-1 ${completedTasks.includes(task.id) ? "line-through text-gray-500" : ""}`}
             >
-              {toSentenceCase(task.title)}
+              {truncateString(task.title, 20)}
             </p>
             {expandedTaskId === task.id && (
               <div className="w-full transition-all duration-500">
