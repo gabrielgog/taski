@@ -66,9 +66,6 @@ The live version of Taski can be accessed at https://taski-dev.netlify.app/.
 
 - [Next.js Documentation](https://nextjs.org/docs).
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs).
-customization options.
 - [React Hook Form Documentation](https://react-hook-form.com/get-started).
-for form validation.
 - [React Hot Toast Documentation](https://react-hot-toast.com/).
-JSONPlaceholder API and its endpoints.
 - [JSONPlaceholder API Documentation](https://jsonplaceholder.typicode.com/).
