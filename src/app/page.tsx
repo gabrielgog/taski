@@ -84,6 +84,8 @@ export default function Home() {
       reset();
     } catch (error) {
       toast.error("An error occurred");
+      handleDataUpdate("loading", false);
+
     }
   };
 
@@ -198,7 +200,7 @@ export default function Home() {
           />
 
           <button
-            className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white"
+            className="group relative h-12 overflow-hidden rounded-2xl bg-primary text-lg font-bold text-white duration-200 hover:opacity-80"
             onClick={handleSubmit(handleAddTasks)}
           >
             {data.loading ? "loading..." : "Add task"}

@@ -7,11 +7,7 @@ interface TaskDetailProps {
 const TaskDetail = ({ description }: TaskDetailProps) => {
   return (
     <div className="">
-      {description ? (
-        <p className="text-sm text-gray-600">{description}</p>
-      ) : (
-        <p className="text-gray-600">No description was added</p>
-      )}
+        <p className="text-sm text-gray-600">{description ? description : "No description was added"}</p>
     </div>
   );
 };

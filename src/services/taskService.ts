@@ -1,3 +1,4 @@
+import { TaskListItem } from "@/components/TaskList";
 import networkInstance from "./axios";
 import routes from "@/const/routes";
 
@@ -11,7 +12,7 @@ export const getTasks = async () => {
   }
 };
 
-export const addTasks = async (tasksData: any) => {
+export const addTasks = async (tasksData: TaskListItem) => {
     try {
       const response = await networkInstance.post(routes.TODOS, tasksData);
       return response.data;
