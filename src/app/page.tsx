@@ -23,19 +23,18 @@ interface AddTaskType {
 }
 
 interface AppState {
-    openModal: boolean;
-    loading: boolean;
-    tasks: TaskListItem[]; 
-    search: string;
-  }
-  
-  const initialAppState: AppState = {
-    openModal: false,
-    loading: false,
-    tasks: [],
-    search: "",
-  };
+  openModal: boolean;
+  loading: boolean;
+  tasks: TaskListItem[];
+  search: string;
+}
 
+const initialAppState: AppState = {
+  openModal: false,
+  loading: false,
+  tasks: [],
+  search: "",
+};
 
 export default function Home() {
   const {
@@ -64,9 +63,9 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTodos = async () => {
-        handleDataUpdate('loading', true)
+      handleDataUpdate("loading", true);
       const fetchedTodos = await getTasks();
-      handleDataUpdate('loading', false)
+      handleDataUpdate("loading", false);
       handleDataUpdate("tasks", fetchedTodos);
     };
     fetchTodos();
@@ -79,7 +78,7 @@ export default function Home() {
       title: data.title,
       completed: checkCompletion(data.status),
       description: data.description,
-      id: newId
+      id: newId,
     };
 
     handleDataUpdate("loading", true);
@@ -98,7 +97,6 @@ export default function Home() {
     } catch (error) {
       toast.error("An error occurred");
       handleDataUpdate("loading", false);
-
     }
   };
 
@@ -108,13 +106,22 @@ export default function Home() {
       !task.completed,
   );
 
+  const InCompleteTasks = data.tasks.filter(
+    (task: TaskListItem) => !task.completed,
+  );
+
+  const CompletedTasks = data.tasks.filter(
+    (task: TaskListItem) => task.completed,
+  );
+
   return (
     <main className="m-10 md:m-20">
       <ToastContainer />
       <div className="flex justify-between">
-        <Image src={Logo} alt="taski-logo" 
+        <Image
+          src={Logo}
+          alt="taski-logo"
           className="max-w-[200px] max-h-[100px] w-auto h-auto"
-
         />
         <Avatar name="John" image={ProfileImage.src} />
       </div>
@@ -125,7 +132,7 @@ export default function Home() {
             Welcome, <span className="text-primary">John.</span>
           </h1>
           <span className="text-slate-400 text-sm">
-            You've got {filteredTasks.length} tasks to do.
+            You've got {InCompleteTasks.length} tasks to do.
           </span>
         </div>
         <Input
@@ -142,11 +149,24 @@ export default function Home() {
         <span className="text-gray-600">Add a new task...</span>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 w-full h-[25rem] overflow-auto">
         <TaskList
           tasks={filteredTasks}
           openModal={() => handleDataUpdate("openModal", true)}
           loading={data.loading}
+        />
+      </div>
+
+        {!data.loading && (
+        <div className="flex justify-between p-4 mt-5">
+        <p className="text-gray-600">Completed</p>
+        <p className="underline cursor-pointer text-red-500">Delete all</p>
+    </div>
+            )}
+      <div className="mt-5 w-full h-[25rem] overflow-auto">
+        <TaskList
+          tasks={CompletedTasks}
+          checked
         />
       </div>
 
